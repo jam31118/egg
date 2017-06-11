@@ -325,3 +325,6 @@ for (cos_p = cos_p_head; cos_p < cos_p_tail; cos_p += n) {
   - This would be similar to that of $^ etc. in makefile. e.g. $mesh is substituted to the 'mesh' variable in CONFIG file
 - [parsing] If there is '=' in the value of key in CONFIG, it should be categorized as value.
 
+170611
+- create a new git repo
+
