@@ -327,4 +327,5 @@ for (cos_p = cos_p_head; cos_p < cos_p_tail; cos_p += n) {
 
 170611
 - create a new git repo
+- implement non-auth upload
 
