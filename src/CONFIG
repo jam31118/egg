@@ -1,0 +1,9 @@
+xmax=10
+mesh=100
+fileout=test.dat
+tdseout=tdse.dat
+nodes=1:5
+e=0
+tempmesh=10
+tmax=1
+videoname=default

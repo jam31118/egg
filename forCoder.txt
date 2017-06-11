@@ -1,0 +1,8 @@
+For coder
+
+- in code, there's some expression like
+  '\sqrt', '\in' etc.
+  these are LaTeX expression, used for 
+  clear representation of complex mathematical
+  expression.
+

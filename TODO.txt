@@ -1,0 +1,327 @@
+170511
+- parse comments from CONFIG file
+- parse regardless of blanks in front of or after the '=' token
+- distinguish blank lines and pass it
+- replace scanf's into FILE input in 'harmonic1.c'
+- modifies fileout scheme
+- error fixing
+ - not printing the 'fileout' variable in the main function ('parseAndStore.c')
+
+- required functionality (1D symetric potential TDSE solver)
+ - finding and printing specified eigenvectors
+ - calculating and printing propagating eigenvectors along timesteps
+ - calculate estimated error
+
+- benchmarking software
+ - if specify execution binary file name and related options,
+   it automatically execute the binary file and measure the time
+ - it should be able to execute the program automatically in a
+   specified sequence and options, and print the result as 
+   elapsed time along with used options
+ - it would be good if it automate even the plotting the result
+
+170512
+- do backup!
+- make the main() of parse program into module in lib and headers
+ - make a separate and independant header and src
+ - the header and src should contain purely functions and var for parseing
+ - and make a real main program or example of it to test this header
+
+- after several test with successful results, 
+  all the logging printf function lines should be erased
+ - of course, the error message should be left.
+
+- checking whether CONFIG file itself is present
+ - if not, error message should be output
+ - although opening file error may have several causes to be wrong,
+   the error should be classified as specific as possible
+   for the users to recognize which is wrong so that they should
+   feel this program to be highly useful and comfortable.
+
+- How do I prevent segmentation fault?
+ - What is the causes of the fault?
+
+- harmonic1 program .. add functionality for parsing and using the CONFIG file
+ - in for(;;) loop,, if nodes, say, 3 (positive integer scalar)
+   it calculate for that 3, then stop at next iteration.
+   If nodes<0, or specificly -1, it stops without calculation
+ - If version using single valued-nodes option is implemented,
+   then, multi-valued nodes should be able to be processed.
+   - say, if nodes=1,2,4 then, it calculate for 1,2, and 4 respectively
+     and print to the output file. then, stop at fourth interation
+   - the config struct. should also be modified to support multi-valued nodes.
+
+- makefile should be generalized using directory of './include' and './lib'
+  as was done in ComputerSystemAssignment02
+  - the directory 'lib' may be wrong name .. let's find alternative
+
+- send the maker of these samples code for the courses
+  the cpp version of the code?
+
+- after some completion of codes, the compiled binary should be tested 
+  in an isolated directory, consisting of only CONFIG etc.
+
+170514
+- For multiple nodes..
+ - possible states
+  - total number of eigenfunc: N .. from 1 to N
+   - idea. format: '1:N'
+   - e.g. '1:32' means calculate 1st to 32nd solutions
+  - specific numbers (quite rare ..)(later priority)
+   - 'nodes=1,2,5,6'
+  - mixed format such as 'nodes=1,2,3,5:6,9:23' (most general)
+  - just one number (already implemented)
+ - data format ..
+  - maybe array? 
+   - e.g. '1:N' -> int[N] which maps 1->1,2->2,...,N->N
+   - e.g. 'nodes=1,2,5,6' -> int[4] which maps 1->1,2->2,3->5,4->6
+     so node calculation is iterated through this array
+ - parsing
+  - firstly, nodes=1,2,3,5:6,9:23 => 'nodes' + '1,2,3,5:6,9:23' 
+  - parse value w.r.t comma so '1,2,3,5:6,9:23' => '1'+'2'+...'5:6'+'9:23'
+  - then, each token is tested whether it is scalar('a') or 'a:b' format
+    and after that, properly processed according to the type
+  - then, the parsed data is stored in the array (in 'data format')
+  - of course, blanks should also be treated; properly eliminated
+ - implementation - function design
+  - int parseNodes(char *value, int *resultArray)
+  - pass to this func a Config.nodesIndice, then it is assigned a malloc(#ofElement)
+    then, filled with indice of nodes.
+  - it would be good to send this function to 'Parser' class as a member method.
+
+after implement something, mark each line whether it is implemented or not.
+
+170519
+- after the eigenstate generator's core functionality is established,
+  the main function, the main calculatioin should be packaged into module,
+  hiding the complexity of inside calculation and enhancing code maintance efficiency
+- in printing the result, the precision is really important
+ - study the concept of precision and modify the printing code to print the proper precision
+ - the precision is closely related to the upper bound of error. consider it also.
+- I think, in considering the perfomance and data storage, 
+  the binary format rather than decimal string seems to be more efficient.
+  let's check it and determine which way should I go
+- the error estimation should be, must be implemented
+  so that, after every calculation, the error should be calculated and printed
+  in the resulting file. without it, the whole calculation isn't believble!
+- before executing the whole program, 
+  pre-check about the execution environment should be conducted
+  - for plotting, the execution shoulb be in (virtual) python environment where
+    matplotlib and numpy is available
+- of course, in dynamics also, since the number of eigenvectors used is finite,
+  there's also an error in propagation scheme. The magnitude of that should also be considered.
+- [PLOT] energy should be read when plotting
+- name of project, or the title of the plot should be able to be set by user through config file
+- the potential should also be set by user
+ - it can be either by direct file with (coord. & potential) pair such as (0,1,2,3,4) & (0.1,0.3,0.6,0.2,0.0)
+   or it can the form of mathamatical expression
+
+- list of modules for eigenstate solver:
+ - printing module.. it should be separated by calcaulton part (or module)
+ - calculation module.. can it be separated by printing part? I guess so.
+   maybe, it should be recommened, since otherwise it would take many main memory
+   the file writing should be done asynchroously or simulataeouly with the calculation
+
+- later, as a generalization, the imaginary part should also be present in the printed file
+- in propagaion code, the imaginary part of the wavefunction should also be considered.
+ - currently, only the real part is used since the eigenstate is set to real with corresponding phase,
+   so the propagated solution also real.
+ - thus, the imaginary part should also be implemented.
+
+- the use change of variable should be analyzed in order to get
+  explicit conversion relation bewteen simplified arbi unit to real physical units!
+  - [170519 completed] in unit conversion used in lecture notes of 'harmonic' part,
+    it is possble to convert the arbiturary units to real units such as xi to x
+	and psi0(xi) to psi(x) and epsilon to E and V0(epsilon) to V(x)
+	with mediating variable omega. The omega enable us to select quite flexible
+	choice of V(x) and, in consequcne, the energ range.
+	e.g. if V(x) is converted to V0(\xi) where \xi = \sqrt{m\omega/\hbar}x
+	so that V0(\xi) = V(x) = V(\sqrt{\hbar/(m*\omega)}\xi).
+	then, the \epsilon which is energy in arbiturary unit is calculated
+	and the real energy in real unit can be calculated by E = \hbar\omega\epsilon
+	Thus, we can gain result such as enegry and corresponding for various potential by tweaking \omega
+	
+
+- make TODO and other document as LaTeX document so that 
+  the readability of the document can higly enhanced.
+  - severel levels of bullets and section is higly 
+    recommended for further readability.
+
+- The memory should be well contolled, so monitering or estimating
+  the expected memory useage should be tracked
+  so,, by either add up the total size of arrays and others or else,
+  let's implement the total memory usage estimation
+  - should be able to know the total memory size of this current system
+  - so that the program can compare the memory size with the estimated memory usage
+
+- (this is obsolote, refence the below(170520ver.))matrix multiplication algorithm candidate:
+ int n; // number of eigenstates
+ int N; // number of spatial mesh
+ int M; // number of temporal mesh
+ int i,j;
+ int re_Psi[N*M], im_Psi[N*M];
+ int coeff_cos_re_psi[N*n + M*n]; // cos_re_psi <-> [[[n],[n],...(N times)...,[n]],[[n],[n],...(M times)...,[n]]]
+ for (i=0; i<N; i++) {
+ 	for (j=0; j<M; j++) {
+		offset = n*(-i+j+N); // need verification
+		resultAddr = re_Psi + j*N + i;
+		for (p=cosrepsi + i*n; p < cosrepsi + (i+1)*n; p++) {
+			*resultAddr = (*p) * (*(p+offset));
+		}
+	}
+ }
+
+
+- TDSE solver program outline:
+ - read config and assign it to proper var. / read eigenstates and energy / declare arrays / ... 
+   / calculate coeff.[n] / fill the coeff_cos_re_psi, coeff_sin_im_psi
+   / matrix multiplication / print to file
+
+- printing to file should be optimized extensively,, since, currently,,
+  so many function call.. call each for one number .. horrible.
+  - maybe.. can print it 5 or more words at one func call.. but not that innovative
+  - I think there would be a streaming .. a whole array I guess!
+
+170520
+- The config file name can be passed by command line argument
+ - it can be used to invoke subroutine program by generating temporary config file
+   for the subroutine only and pass it to the subroutine program by the command line argument.
+ - e.g. For uncoupled multidimensional simulation, the lower dimension,
+   such as 1D simulation program can be invoked repeatedly
+   - c.f. In case of V(x,y,z) = x^2 + y^2 + z^2
+     the 1D subroutine need to be run 3 times, since by calculating just
+	 once, we can obtain 1D eigenvectors, and the 3D basis is just a
+	 multiplication of those eigenvectors.
+
+- When calculating coefficient of each basis term, c_i,
+  integral is required. When calculating the integral,
+  the intergral boundary should be determine and in this process,
+  since we cannot integral numerically in infinite boundary,
+  an error arise and we should track this error scale.
+
+- Matrix multiplication should be more complex, if we consider coefficent.
+  the new algorithm is as the following:
+ int n; // number of eigenstates
+ int N; // number of spatial mesh
+ int M; // number of temporal mesh
+ int i,j;
+ int re_Psi[N*M], im_Psi[N*M];
+ int coeff_cos_re_psi[N*n + M*n]; // cos_re_psi <-> [[[n],[n],...(N times)...,[n]],[[n],[n],...(M times)...,[n]]]
+ 
+ int *resultAddr = re_Psi;
+// int *coeff_p_head = coeff_cos_re_psi;
+ int *cos_p_head = coeff_cos_re_psi + n;
+ int *re_psi_p_head = coeff_cos_re_psi + n + n*N;
+
+ for (it=0; it<M*n; it+=n) { // to reduce repeatition of it*n calc.
+ 	// so, it = (index in cos vec.)
+ 	for (ix=0; ix<N*n; ix+=n) { // to reduce ix*n calc.
+		// so, ix = (index in re_psi vec.)
+		
+		// offset = n*(-i+j+N); // need verification
+		off_cos = 
+		//resultAddr = re_Psi + j*N + i;
+		//for (p=cosrepsi + i*n; p < cosrepsi + (i+1)*n; p++) {
+
+		
+		for (coeff_p = coeff_cos_re_psi; coeff_p < cos_p_start; coeff_p++) {
+			*resultAddr += (*coeff_p) * (*cos_p) * (*re_psi_p);
+			cos_p++; // ADDI rather than ADDing lagge index
+			re_psi_p++; // ADDI rather than ADDing lagge index
+		}
+		resultAddr++;
+	}
+ }
+
+
+
+// Declaration
+// ...
+
+// Calc.
+int *re_Psi_p = re_Psi;
+
+int *coeff_p_head = coeff_cos_re_psi;
+int *cos_p_head = coeff_cos_re_psi + n;
+int *re_psi_p_head = coeff_cos_re_psi + n + n*M;
+
+int *coeff_p_tail = cos_p_head;
+int *cos_p_tail = re_psi_p_head;
+int *re_psi_p_tail = coeff_cos_re_psi + n + n*M + n*N;
+
+for (cos_p = cos_p_head; cos_p < cos_p_tail; cos_p += n) {
+	for (re_psi_p = re_psi_p_head; re_psi_p < re_psi_p_tail; )
+	// there should be no re_psi_p increment since it is in the lower loop.
+	{
+		for (coeff_p = coeff_p_head; coeff_p < coeff_p_tail; coeff_p++) {
+			*re_Psi_p += (*coeff_p) * (*cos_p) * (*re_psi_p);
+			cos_p++; // ADDI rather than ADDing large index
+			re_psi_p++; // ADDI rather than ADDing large index
+		}
+		cos_p -= n;
+		re_Psi_p++;
+	}
+}
+
+- The initial conditions should be given by user, outside of the mainpram
+  from file!
+  - the file should be generated according to CONFIG file
+  - the python interface may help user to generate
+
+- be careful! if input N as mesh, then the whole number of mesh .. about twice? about 2N+1.
+- all pointers corresponing to array (not the original but the moving one, namely, the 'probe' on the array) should be declared and assigned on the upper part of the code, as soon as the config file is processed completely.
+ - the ()_p_max .. these var. should be declared as constant
+
+- [THINK] part should be treated!
+- integralTrapzoid etc. should be put into other header and c source file
+ - the makefile should also be modified accordingly
+
+- several arrays, as many as possible, should be freed in order
+  to use memory efficiently.
+
+- chagne the variable name into the name of adimensional name such as \xi or \tau etc.
+- change the output data filename into neat, unique names!
+- let's calculate the complexsity as a function of system size or number of basis functions!
+  Does it goes exponentially large or else? Factorial?
+
+170521
+- in graping, or plotting, it would be good to follow the following:
+ - plot both wavefucntiosn and prob. distribution, i.e. square of the prob.
+   then, the prob. will be at the top.
+ - in case of 1D simulation, how about plotting the \Psi(x,t) in 3D plot?
+   so it is like a surface, flowing through the timeline.
+   in case of plotting both wavefunc. and prob., then, the prob. which is an
+   upper bound of both wavefunc. should be slightly transparent 
+   in order to keep visible the wavefunc.
+- in real unit animation, show that the simulation is being shown in 
+  how slower than the real case, e.g. 10^8 times slower
+
+170522
+- One of the verification method, we should check the norm of each
+  eigenvectors and propagrated wavefunction, whether it is unity or not.
+- Let's list the verification method that the program to be developed
+  should satisfies.
+- As one of the error tracking, the effect of the number of eigenvectors 
+  on the magnitude of error of the calculaton should be identified.
+- The error can arise from any parameters, so the error is a function
+  of those parameters to real number. This function should be identified
+  in order to track the magnitude of the error and, by estimating the
+  magnitude, we can determine the minimum calculation configuration
+  in order to meet some precision criterion.
+
+170602
+- Autodetect the maximum of the wavefunction and use them when determining plotting y-value maxmin
+- The values are too small.. how can I fix that? just normalize it later??
+- Does the graph move faster if we add up more eigenfuncitions?? Why?
+- How about using arbi units when representing probability?? Since the absolute values are not that important!
+  - The data read by genfromtxt should be multiplied by scalar with sufficient magnitude
+    so that even when the wavefunction are squared, the value can be seen in the plot.
+	I think the magnitude should be determine in such a way that the maximum value of wavefunction becomes an order of unity
+  - This procedures such as finding maximum and muliplied to data should be done automatically.
+  - The multiplication to the order of unity should be done to the c program itself. .. in case of out of range of double.
+- The resulting video's resolution and image size(number of pixels etc.) should be controlled as I want.
+- permitting the 'macro'. When one wants to write their resulting video's name, they might want to use
+  the parameter in CONFIG file such as 'mesh', 'eigennum' etc. This should be supported.
+  - This would be similar to that of $^ etc. in makefile. e.g. $mesh is substituted to the 'mesh' variable in CONFIG file
+- [parsing] If there is '=' in the value of key in CONFIG, it should be categorized as value.
+

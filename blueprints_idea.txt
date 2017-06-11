@@ -1,0 +1,41 @@
+
+170511, 170512
+- building parse CONFIG and use the parsed configuration in the program
+ - the possible options should be defined in struct in header file
+ - in the header file, the structure of options are defined (maybe by typedef)
+- blueprint for CONFIG file:
+ - required values
+  - xmax ('xmax')
+  - gridpoints ('mesh')
+  - output file name ('fileout') (this may be fixed)
+  - number of nodes ('nodes')(this may be transformed to other form .. may the range or set of number of nodes .. so generalizing)
+  - Trial energy ('e') (it may be eliminated later)
+  - () fixed energy scheme or finding energy scheme
+  - () print options (should be refined more)
+   - whether print or not the sequence of converging energy
+   - format of printing numbers .. how many digits under punctuation etc.
+     e.g. 8.3f
+   - name of image file name.. for each plotting mode (e.g. TISE, TDSE etc.)
+  - save options
+   - save sequence of converging energy
+
+- binary program hierarchy
+ - finding eigenstates
+  - for various potentials (even, time-inde, time-de etc.)
+  - for various dimensions (1D,2D,3D ...)
+  - for various systems
+ - calculating propationor
+ - plotting (it may not be binary)
+  - plotting script for TISE and TDSE should be separated for maintanence etc.
+    but, it would be good to share common tools by importing common python file
+
+- mpi or GPU implementation is required only when the execution time is big.
+- paging or dividing into blocks is required when the main memory is not enough (like GStream)
+- python interface is required when multiple binary program (finding eigenstate, propagator etc.) is present
+
+
+Visualization fo 2D-solution
+- including both correlated and uncorellated solutions
+- should be determined after practicing matplotlib 2-dimensional (3D in plotting) graph
+- blueprint for data file for plotting (time-independent case) 
+- blueprint for data file for plotting (time-dependent case)

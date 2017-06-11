@@ -1,0 +1,8 @@
+
+- user-defined type name ends with '_t'
+- var. that ends with '_p' is pointer
+- function and var. name follows java-like conventions
+ - e.g. processConfigFile
+ - e.g. firstIsLowercase(), secondStartFromCaptitalLetter()
+- structure var. name starts with a captital letter
+

@@ -1,0 +1,12 @@
+
+170512
+- this program will be generic program that can solve not only specific problem
+  but really readily-module-attachable etc.
+  thus, the development process will be like adding more and more
+  functionality to the original program.
+  However, if the overall transfomration or re-design is thought to be required,
+  for the sake of the user friendlyness and for other design 'principle',
+  then it should be done.
+- user-function-attable
+- user-potential-applicable
+
