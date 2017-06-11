@@ -1,0 +1,18 @@
+OUTLINE
+- list of program to compile and run the program
+  + with installation guides 
+  + where to get the source code of the program
+  + (In case there's no way to get source) 
+    my (permanent) (email or real) address
+	for contact for the source code & installation
+
+- Tested OS with each of the version etc.
+  + 'test' includes compilation, execuation etc.
+  + which involves the ingredient program 
+    for compilation and execution such as gcc(with version) etc.
+  + should be tested wide range of linux distribution
+    such as Ubuntu(with various versions), CentOS, Arch etc.
+	Windows and Mac should be also be included if I(we) can.
+  + The testing on various OS can be completed through
+    several virtual machines on few real machine(s)!
+
